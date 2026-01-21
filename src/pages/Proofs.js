@@ -31,7 +31,12 @@ const Proofs = () => {
   const fetchProofs = async () => {
     setLoading(true);
     try {
-      const response = await proofsAPI.list({ page: pagination.page, limit: 10, ...filters });
+      // Only include filters that have values
+      const params = { page: pagination.page, limit: 10 };
+      if (filters.proofType) params.proofType = filters.proofType;
+      if (filters.status) params.status = filters.status;
+      
+      const response = await proofsAPI.list(params);
       setProofs(response.data.data.proofs);
       setPagination(prev => ({ ...prev, ...response.data.data.pagination }));
     } catch (err) {
